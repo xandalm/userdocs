@@ -19,7 +19,8 @@ const userCtrl = new UserController(userDao)
 
 const UserRoutes = express.Router()
 
-UserRoutes.get("/:id", userCtrl.GetById.bind(userCtrl))
+UserRoutes.get("/:id", userCtrl.Get.bind(userCtrl))
+UserRoutes.get("/", userCtrl.GetMany.bind(userCtrl))
 UserRoutes.post("/", userCtrl.Post.bind(userCtrl))
 UserRoutes.put("/:id", userCtrl.Put.bind(userCtrl))
 UserRoutes.delete("/:id", userCtrl.Delete.bind(userCtrl))

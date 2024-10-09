@@ -31,6 +31,13 @@ function userViewModel(user: User): UserViewModel {
   return data
 }
 
+// expected prefix|suffix|infix 
+interface PCS {
+  prefix?: string,
+  infix?: string,
+  suffix?: string
+}
+
 export default class UserController {
   private userDao: UserDAO
   constructor(userDao: UserDAO) {
@@ -66,7 +73,7 @@ export default class UserController {
       res.send()
     })
   }
-  async GetById(req: Request, res: Response) {
+  async Get(req: Request, res: Response) {
     let {id} = req.params
 
     this.userDao.Select(parseInt(id))
@@ -76,6 +83,19 @@ export default class UserController {
           return
         } 
         res.status(200).json(userViewModel(user))
+      })
+      .catch(err => {
+        switch(err) {
+          default:
+            res.status(500)
+        }
+        res.send()
+      })
+  }
+  async GetMany(req: Request, res: Response) {
+    this.userDao.SelectAll()
+      .then(users => {
+        res.status(200).json(users.map(user => userViewModel(user)))
       })
       .catch(err => {
         switch(err) {

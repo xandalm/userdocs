@@ -104,15 +104,15 @@ export interface UserStorage {
     updatedAt?: Date|null;
     // deletedAt?: Date|null;
   }|null>
-  SelectUsers(options: {
+  SelectUsers(options?: {
     email?: {
       prefix?: string,
-      contains?: string,
+      infix?: string,
       suffix?: string
     }, 
     name?: {
       prefix?: string,
-      contains?: string,
+      infix?: string,
       suffix?: string
     }
   }) : Promise<{
@@ -137,15 +137,15 @@ export interface UserDAO {
   Update(user: User, set: {email: string, name: string}) : Promise<void>
   Delete(id: number) : Promise<void>
   Select(id: number) : Promise<User|null>
-  SelectAll(options: {
+  SelectAll(options?: {
     email?: {
       prefix?: string,
-      contains?: string,
+      infix?: string,
       suffix?: string
     }, 
     name?: {
       prefix?: string,
-      contains?: string,
+      infix?: string,
       suffix?: string
     }
   }) : Promise<User[]>
@@ -219,19 +219,34 @@ class UserDAOImpl implements UserDAO {
       })
     })
   }
-  SelectAll(options: {
+  SelectAll(options?: {
     email?: {
       prefix?: string,
-      contains?: string,
+      infix?: string,
       suffix?: string
     }, 
     name?: {
       prefix?: string,
-      contains?: string,
+      infix?: string,
       suffix?: string
     }
   }): Promise<User[]> {
-    throw new Error("Method not implemented.")
+    return new Promise((resolve, reject) => {
+      this.sto.SelectUsers()
+      .then(res => {
+        let users: User[] = res.map(usr => new UserImpl({
+          id: usr.id,
+          email: usr.email,
+          name: usr.name,
+          createdAt: usr.createdAt.getTime(),
+          updatedAt: usr.updatedAt == null ? null : usr.updatedAt.getTime()
+        }))
+        resolve(users)
+      })
+      .catch(err => {
+        reject(err)
+      })
+    })
   }
 }
 

@@ -80,12 +80,12 @@ export default class MemoryStorage implements UserStorage {
   SelectUsers(options: {
     email?: {
       prefix?: string,
-      contains?: string,
+      infix?: string,
       suffix?: string
     }, 
     name?: {
       prefix?: string,
-      contains?: string,
+      infix?: string,
       suffix?: string
     }
   } = {}): Promise<{ id: number; name: string; email: string; createdAt: Date; updatedAt?: Date | null; }[]> {
@@ -93,14 +93,14 @@ export default class MemoryStorage implements UserStorage {
 
     const emailChecks: ((u: UserData) => boolean)[] = []
     if (options.hasOwnProperty("email")) {
-      let emailOpt = options.email as {prefix?: string, contains?: string, suffix?: string}
+      let emailOpt = options.email as {prefix?: string, infix?: string, suffix?: string}
       if (emailOpt.hasOwnProperty("prefix")) {
         let prefix: string = emailOpt.prefix as string
         emailChecks.push((u: UserData) => u.email.startsWith(prefix))
       }
-      if (emailOpt.hasOwnProperty("contains")) {
-        let contains: string = emailOpt.contains as string
-        emailChecks.push((u: UserData) => u.email.includes(contains))
+      if (emailOpt.hasOwnProperty("infix")) {
+        let infix: string = emailOpt.infix as string
+        emailChecks.push((u: UserData) => u.email.includes(infix))
       }
       if (emailOpt.hasOwnProperty("suffix")) {
         let suffix: string = emailOpt.suffix as string
@@ -110,14 +110,14 @@ export default class MemoryStorage implements UserStorage {
 
     const nameChecks: ((u: UserData) => boolean)[] = []
     if (options.hasOwnProperty("name")) {
-      let nameOpt = options.name as {prefix?: string, contains?: string, suffix?: string}
+      let nameOpt = options.name as {prefix?: string, infix?: string, suffix?: string}
       if (nameOpt.hasOwnProperty("prefix")) {
         let prefix: string = nameOpt.prefix as string
         nameChecks.push((u: UserData) => u.name.startsWith(prefix))
       }
-      if (nameOpt.hasOwnProperty("contains")) {
-        let contains: string = nameOpt.contains as string
-        nameChecks.push((u: UserData) => u.name.includes(contains))
+      if (nameOpt.hasOwnProperty("infix")) {
+        let infix: string = nameOpt.infix as string
+        nameChecks.push((u: UserData) => u.name.includes(infix))
       }
       if (nameOpt.hasOwnProperty("suffix")) {
         let suffix: string = nameOpt.suffix as string
