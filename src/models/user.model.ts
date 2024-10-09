@@ -87,7 +87,7 @@ export interface UserStorage {
     updatedAt?: Date;
     deletedAt?: Date;
   }>
-  UpdateUser(id: number, email: string, name: string) : Promise<{
+  UpdateUser(id: number, set: {email?: string, name?: string}) : Promise<{
     id: number;
     name: string;
     email: string;
@@ -123,7 +123,7 @@ export interface UserStorage {
 
 export interface UserDAO {
   Create(user: User) : Promise<void>
-  Update(user: User) : Promise<void>
+  Update(user: User, set: {email: string, name: string}) : Promise<void>
   Delete(id: number) : Promise<void>
   Select(options?: {id?: number, email?: string, name?: string}) : Promise<User|null|User[]>
 }
@@ -149,8 +149,22 @@ class UserDAOImpl implements UserDAO {
       })
     })
   }
-  Update(user: User): Promise<void> {
-    throw new Error("Method not implemented.")
+  Update(user: User, set: {email?: string, name?: string}): Promise<void> {
+    if (!(user instanceof UserImpl)) {
+      throw new Error("incompatible type")
+    }
+    return new Promise((resolve, reject) => {
+      this.sto.UpdateUser(user.Id(), set)
+      .then(res => {
+        user.SetEmail(res.email)
+        user.SetName(res.name)
+        user.SetUpdatedAt(res.createdAt)
+        resolve()
+      })
+      .catch(err => {
+        reject(err)
+      })
+    })
   }
   Delete(id: number): Promise<void> {
     throw new Error("Method not implemented.")

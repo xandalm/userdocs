@@ -11,7 +11,7 @@ class StubStorage implements UserStorage {
       createdAt: new Date,
     })
   }
-  UpdateUser(id: number, email: string, name: string): Promise<{ id: number; name: string; email: string; createdAt: Date; updatedAt: Date; deletedAt?: Date; }> {
+  UpdateUser(id: number, set: {email?: string, name?: string}): Promise<{ id: number; name: string; email: string; createdAt: Date; updatedAt: Date; deletedAt?: Date; }> {
     throw new Error("Method not implemented.");
   }
   DeleteUser(id: number): Promise<{ id: number; name: string; email: string; createdAt: Date; updatedAt?: Date; deletedAt: Date; }> {
