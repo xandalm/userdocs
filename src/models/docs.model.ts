@@ -1,3 +1,4 @@
+import { Storage } from "../persistence/storage"
 
 interface DocFields {
   id: number
@@ -79,53 +80,6 @@ class DocFactoryImpl {
 
 export const DocFactory = new DocFactoryImpl
 
-export interface DocStorage {
-  CreateDoc(name: string, owner: number, status: number) : Promise<{
-    id: number;
-    name: string;
-    owner: number;
-    status: number;
-    createdAt: Date;
-    updatedAt?: Date|null;
-  }>
-  UpdateDoc(id: number, set: {name?: string, status?: number}) : Promise<{
-    id?: number;
-    name: string;
-    owner: number;
-    status: number;
-    createdAt?: Date;
-    updatedAt: Date;
-  }>
-  DeleteDoc(id: number) : Promise<void>
-  SelectDoc(id: number) : Promise<{
-    id: number;
-    name: string;
-    owner: number;
-    status: number;
-    createdAt: Date;
-    updatedAt?: Date|null;
-  }|null>
-  SelectDocs(options?: {
-    email?: {
-      prefix?: string,
-      infix?: string,
-      suffix?: string
-    }, 
-    name?: {
-      prefix?: string,
-      infix?: string,
-      suffix?: string
-    }
-  }) : Promise<{
-    id: number;
-    name: string;
-    owner: number;
-    status: number;
-    createdAt: Date;
-    updatedAt?: Date|null;
-  }[]>
-}
-
 export const ErrEmailAlreadyExists = new Error("email already exists")
 export const ErrInexistentDoc = new Error("there is no such doc")
 export const ErrUnableToCreateDoc = new Error("unable to create doc due to storage error")
@@ -149,8 +103,8 @@ export interface DocDAO {
 }
 
 class DocDAOImpl implements DocDAO {
-  private sto: DocStorage
-  constructor(sto: DocStorage) {
+  private sto: Storage
+  constructor(sto: Storage) {
     this.sto = sto
   }
   async Create(doc: Doc) : Promise<void> {
@@ -176,9 +130,19 @@ class DocDAOImpl implements DocDAO {
     return new Promise((resolve, reject) => {
       this.sto.UpdateDoc(doc.Id(), set)
       .then(res => {
-        doc.SetName(res.name)
-        doc.SetStatus(res.status)
-        doc.SetUpdatedAt(res.updatedAt)
+        if (res.hasOwnProperty("updatedAt")) {
+          let data = res as {
+            id?: number;
+            name: string;
+            owner: number;
+            status: number;
+            createdAt?: Date;
+            updatedAt: Date;
+          }
+          doc.SetName(data.name)
+          doc.SetStatus(data.status)
+          doc.SetUpdatedAt(data.updatedAt)
+        }
         resolve()
       })
       .catch(err => {
@@ -246,7 +210,7 @@ class DocDAOImpl implements DocDAO {
 
 var docDao : DocDAO|null = null
 
-export function CreateDocDAO(storage: DocStorage) : DocDAO {
+export function CreateDocDAO(storage: Storage) : DocDAO {
   if (docDao !== null) {
     throw new Error("doc dao has already been setted")
   }

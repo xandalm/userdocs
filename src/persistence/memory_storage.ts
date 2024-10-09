@@ -1,4 +1,4 @@
-import { ErrEmailAlreadyExists, ErrInexistentUser, UserStorage } from "../models/user.model";
+import { ErrViolatesStatusReference, ErrViolatesUniqueEmail, ErrViolatesUserReference, Storage } from "./storage";
 
 interface UserData {
   id: number,
@@ -8,13 +8,30 @@ interface UserData {
   updatedAt: Date|null,
 }
 
-export default class MemoryStorage implements UserStorage {
+interface DocumentData {
+  id: number,
+  name: string,
+  owner: number,
+  status: number,
+  createdAt: Date,
+  updatedAt: Date|null,
+}
+
+interface DocumentStatusData {
+  id: number,
+  name: string
+}
+
+export default class MemoryStorage implements Storage {
   usersPk: number = 1
+  docsPk: number = 1
   users = new Map<number, UserData>
   usersByEmail = new Map<string, UserData>
+  docs = new Map<number, DocumentData>
+  docstatus = new Map<number, DocumentStatusData>
   CreateUser(email: string, name: string): Promise<{ id: number; name: string; email: string; createdAt: Date; updatedAt?: Date | null; }> {let holdingEmail = this.usersByEmail.get(email)
     if (holdingEmail != null) {
-      throw ErrEmailAlreadyExists
+      throw ErrViolatesUniqueEmail
     }
     let user: UserData = {
       id: this.usersPk++,
@@ -32,34 +49,32 @@ export default class MemoryStorage implements UserStorage {
       createdAt: user.createdAt,
     })
   }
-  UpdateUser(id: number, set: { email?: string; name?: string; }): Promise<{ id?: number; name: string; email: string; createdAt?: Date; updatedAt: Date; }> {
+  UpdateUser(id: number, set: { email?: string; name?: string; }): Promise<{ id?: number; name: string; email: string; createdAt?: Date; updatedAt: Date; }|{}> {
     
-    let user = this.users.get(id)
+    let user = this.users.get(id);
     if (user == null) {
-      throw ErrInexistentUser
+      return Promise.resolve({})
     }
-    
+    let mutated = false;
     if (set.hasOwnProperty("email")) {
       let email = set.email as string;
       let holdingEmail = this.usersByEmail.get(email);
       if (holdingEmail != null && holdingEmail.id != id) {
-        throw ErrEmailAlreadyExists
+        throw ErrViolatesUniqueEmail
       }
       this.usersByEmail.delete(user.email);
       user.email = email;
-      this.usersByEmail.set(email, user)
+      this.usersByEmail.set(email, user);
+      mutated = true
     }
     if (set.hasOwnProperty("name")) {
       user.name = set.name as string
+      mutated = true
     }
-    user.updatedAt = new Date;
-    return Promise.resolve({
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt
-    })
+    if (mutated) {
+      user.updatedAt = new Date
+    }
+    return Promise.resolve(user)
   }
   DeleteUser(id: number): Promise<void> {
     let user = this.users.get(id);
@@ -89,9 +104,11 @@ export default class MemoryStorage implements UserStorage {
       suffix?: string
     }
   } = {}): Promise<{ id: number; name: string; email: string; createdAt: Date; updatedAt?: Date | null; }[]> {
-    let users = new Array<UserData>
+    let users: UserData[] = []
 
-    const emailChecks: ((u: UserData) => boolean)[] = []
+    type Fn = (u: UserData) => boolean
+
+    const emailChecks: Fn[] = []
     if (options.hasOwnProperty("email")) {
       let emailOpt = options.email as {prefix?: string, infix?: string, suffix?: string}
       if (emailOpt.hasOwnProperty("prefix")) {
@@ -108,7 +125,7 @@ export default class MemoryStorage implements UserStorage {
       }
     }
 
-    const nameChecks: ((u: UserData) => boolean)[] = []
+    const nameChecks: Fn[] = []
     if (options.hasOwnProperty("name")) {
       let nameOpt = options.name as {prefix?: string, infix?: string, suffix?: string}
       if (nameOpt.hasOwnProperty("prefix")) {
@@ -125,7 +142,7 @@ export default class MemoryStorage implements UserStorage {
       }
     }
 
-    const pass = (u: UserData, tests: ((u: UserData) => boolean)[]) => {
+    const pass = (u: UserData, tests: Fn[]) => {
       for (let i = 0; i < tests.length; i++) {
         const fn = tests[i];
         if (!fn(u)) {
@@ -142,5 +159,121 @@ export default class MemoryStorage implements UserStorage {
     })
 
     return Promise.resolve(users)
+  }
+  CreateDoc(name: string, owner: number, status: number): Promise<{ id: number; name: string; owner: number; status: number; createdAt: Date; updatedAt?: Date | null; }> {
+    if (!this.users.has(owner)) {
+      throw ErrViolatesUserReference
+    }
+    if (!this.docstatus.has(status)) {
+      throw ErrViolatesStatusReference
+    }
+    let data: DocumentData = {
+      id: this.docsPk++,
+      name: name,
+      owner: owner,
+      status: status,
+      createdAt: new Date,
+      updatedAt: null
+    }
+    this.docs.set(data.id, data)
+    return Promise.resolve(data)
+  }
+  UpdateDoc(id: number, set: { name?: string; status?: number; }): Promise<{ id?: number; name: string; owner: number; status: number; createdAt?: Date; updatedAt: Date; }|{}> {
+    let doc = this.docs.get(id);
+    if (doc == null) {
+      return Promise.resolve({})
+    }
+    let mutated = false
+    if (set.hasOwnProperty("name")) {
+      doc.name = set.name as string;
+      mutated = true
+    }
+    if (set.hasOwnProperty("status")) {
+      let status = set.status as number;
+      if (!this.docstatus.has(status)) {
+        throw ErrViolatesStatusReference
+      }
+      doc.status = status;
+      mutated = true
+    }
+    if (mutated) {
+      doc.updatedAt = new Date;
+    }
+    return Promise.resolve(doc)
+  }
+  DeleteDoc(id: number): Promise<void> {
+    let doc = this.docs.get(id);
+    if (doc == null) {
+      return Promise.resolve()
+    }
+    this.docs.delete(doc.id)
+    return Promise.resolve()
+  }
+  SelectDoc(id: number): Promise<{ id: number; name: string; owner: number; status: number; createdAt: Date; updatedAt?: Date | null; } | null> {
+    let doc = this.docs.get(id)
+    if (doc == null) {
+      return Promise.resolve(null)
+    }
+    return Promise.resolve(doc)
+  }
+  SelectDocs(options: {
+    name?: {
+      prefix?: string;
+      infix?: string;
+      suffix?: string;
+    };
+    owner?: number;
+    status?: number;
+  }={}): Promise<{ id: number; name: string; owner: number; status: number; createdAt: Date; updatedAt?: Date | null; }[]> {
+    let docs: DocumentData[] = []
+
+    type Fn = (d: DocumentData) => boolean
+
+    const nameChecks: Fn[] = []
+    if (options.hasOwnProperty("name")) {
+      let nameOpt = options.name as {prefix?: string, infix?: string, suffix?: string}
+      if (nameOpt.hasOwnProperty("prefix")) {
+        let prefix: string = nameOpt.prefix as string
+        nameChecks.push((d: DocumentData) => d.name.startsWith(prefix))
+      }
+      if (nameOpt.hasOwnProperty("infix")) {
+        let infix: string = nameOpt.infix as string
+        nameChecks.push((d: DocumentData) => d.name.includes(infix))
+      }
+      if (nameOpt.hasOwnProperty("suffix")) {
+        let suffix: string = nameOpt.suffix as string
+        nameChecks.push((d: DocumentData) => d.name.endsWith(suffix))
+      }
+    }
+
+    const ownerChecks: Fn[] = []
+    if (options.hasOwnProperty("owner")) {
+      let owner: number = options.owner as number
+      ownerChecks.push((d: DocumentData) => d.owner === owner)
+    }
+
+    const statusChecks: Fn[] = []
+    if (options.hasOwnProperty("status")) {
+      let status: number = options.status as number
+      statusChecks.push((d: DocumentData) => d.status === status)
+    }
+
+    const pass = (u: DocumentData, tests: Fn[]) => {
+      for (let i = 0; i < tests.length; i++) {
+        const fn = tests[i];
+        if (!fn(u)) {
+          return false
+        }
+      }
+      return true
+    }
+
+    this.docs.forEach(doc => {
+      if (pass(doc, nameChecks) && pass(doc, ownerChecks) && pass(doc, statusChecks)) {
+        docs.push(doc)
+      }
+    })
+
+    return Promise.resolve(docs)
   }
 }

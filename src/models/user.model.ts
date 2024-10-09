@@ -1,3 +1,4 @@
+import { Storage } from "../persistence/storage"
 
 interface UserFields {
   id: number
@@ -70,49 +71,6 @@ class UserFactoryImpl {
 
 export const UserFactory = new UserFactoryImpl
 
-export interface UserStorage {
-  CreateUser(email: string, name: string) : Promise<{
-    id: number;
-    name: string;
-    email: string;
-    createdAt: Date;
-    updatedAt?: Date|null;
-  }>
-  UpdateUser(id: number, set: {email?: string, name?: string}) : Promise<{
-    id?: number;
-    name: string;
-    email: string;
-    createdAt?: Date;
-    updatedAt: Date;
-  }>
-  DeleteUser(id: number) : Promise<void>
-  SelectUser(id: number) : Promise<{
-    id: number;
-    name: string;
-    email: string;
-    createdAt: Date;
-    updatedAt?: Date|null;
-  }|null>
-  SelectUsers(options?: {
-    email?: {
-      prefix?: string,
-      infix?: string,
-      suffix?: string
-    }, 
-    name?: {
-      prefix?: string,
-      infix?: string,
-      suffix?: string
-    }
-  }) : Promise<{
-    id: number;
-    name: string;
-    email: string;
-    createdAt: Date;
-    updatedAt?: Date|null;
-  }[]>
-}
-
 export const ErrEmailAlreadyExists = new Error("email already exists")
 export const ErrInexistentUser = new Error("there is no such user")
 export const ErrUnableToCreateUser = new Error("unable to create user due to storage error")
@@ -140,8 +98,8 @@ export interface UserDAO {
 }
 
 class UserDAOImpl implements UserDAO {
-  private sto: UserStorage
-  constructor(sto: UserStorage) {
+  private sto: Storage
+  constructor(sto: Storage) {
     this.sto = sto
   }
   async Create(user: User) : Promise<void> {
@@ -167,9 +125,18 @@ class UserDAOImpl implements UserDAO {
     return new Promise((resolve, reject) => {
       this.sto.UpdateUser(user.Id(), set)
       .then(res => {
-        user.SetEmail(res.email)
-        user.SetName(res.name)
-        user.SetUpdatedAt(res.updatedAt)
+        if (res.hasOwnProperty("updatedAt")) {
+          let data = res as {
+            id?: number;
+            name: string;
+            email: string;
+            createdAt?: Date;
+            updatedAt: Date;
+          }
+          user.SetEmail(data.email)
+          user.SetName(data.name)
+          user.SetUpdatedAt(data.updatedAt)
+        }
         resolve()
       })
       .catch(err => {
@@ -240,7 +207,7 @@ class UserDAOImpl implements UserDAO {
 
 var userDao : UserDAO|null = null
 
-export function CreateUserDAO(storage: UserStorage) : UserDAO {
+export function CreateUserDAO(storage: Storage) : UserDAO {
   if (userDao !== null) {
     throw new Error("user dao has already been setted")
   }

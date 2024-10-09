@@ -1,11 +1,11 @@
 import express from "express";
 import UserController from "./controllers/user.controller";
-import { CreateUserDAO, UserStorage } from "./models/user.model";
+import { CreateUserDAO } from "./models/user.model";
 import MemoryStorage from "./persistence/memory_storage";
 
 // Storage
 
-const storage: UserStorage = new MemoryStorage()
+const storage = new MemoryStorage()
 
 // DAOs
 
