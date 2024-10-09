@@ -5,7 +5,6 @@ interface UserFields {
   email: string
   createdAt: number
   updatedAt: number|null
-  // deletedAt: number|null
 }
 
 export interface User {
@@ -17,7 +16,6 @@ export interface User {
   Email() : string
   CreatedAt() : Date
   UpdatedAt() : Date|null
-  // DeletedAt() : Date|null
 }
 
 class UserImpl implements User {
@@ -27,7 +25,6 @@ class UserImpl implements User {
     email: "",
     createdAt: 0,
     updatedAt: null,
-    // deletedAt: null,
   }
   constructor(props: {id?: number, email?: string, name?: string, createdAt?: number|null, updatedAt?: number|null, deletedAt?: number|null}){
     Object.assign(this.props, props)
@@ -47,9 +44,7 @@ class UserImpl implements User {
   SetUpdatedAt(value: Date) {
     this.props.updatedAt = value.getTime();
   }
-  // SetDeletedAt(value: Date) {
-  //   this.props.deletedAt = value.getTime();
-  // }
+  
   Name(): string {
     return this.props.name;
   }
@@ -65,9 +60,6 @@ class UserImpl implements User {
   UpdatedAt(): Date|null {
     return this.props.updatedAt === null ? null : new Date(this.props.updatedAt);
   }
-  // DeletedAt(): Date|null {
-  //   return this.props.deletedAt === null ? null : new Date(this.props.deletedAt);
-  // }
 }
 
 class UserFactoryImpl {
@@ -85,7 +77,6 @@ export interface UserStorage {
     email: string;
     createdAt: Date;
     updatedAt?: Date|null;
-    // deletedAt?: Date|null;
   }>
   UpdateUser(id: number, set: {email?: string, name?: string}) : Promise<{
     id?: number;
@@ -93,7 +84,6 @@ export interface UserStorage {
     email: string;
     createdAt?: Date;
     updatedAt: Date;
-    // deletedAt?: Date|null;
   }>
   DeleteUser(id: number) : Promise<void>
   SelectUser(id: number) : Promise<{
@@ -102,7 +92,6 @@ export interface UserStorage {
     email: string;
     createdAt: Date;
     updatedAt?: Date|null;
-    // deletedAt?: Date|null;
   }|null>
   SelectUsers(options?: {
     email?: {
@@ -121,7 +110,6 @@ export interface UserStorage {
     email: string;
     createdAt: Date;
     updatedAt?: Date|null;
-    // deletedAt?: Date|null;
   }[]>
 }
 
