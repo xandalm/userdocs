@@ -89,7 +89,7 @@ export const ErrUnableToSelectDoc = new Error("unable to delete doc due to stora
 
 export interface DocDAO {
   Create(doc: Doc) : Promise<void>
-  Update(doc: Doc, set: {name?: string, status?: number}) : Promise<void>
+  Update(doc: Doc) : Promise<void>
   Delete(id: number) : Promise<void>
   Select(id: number) : Promise<Doc|null>
   SelectAll(options?: {
@@ -123,12 +123,12 @@ class DocDAOImpl implements DocDAO {
       })
     })
   }
-  Update(doc: Doc, set: {name?: string, status?: number}): Promise<void> {
+  Update(doc: Doc): Promise<void> {
     if (!(doc instanceof DocImpl)) {
       throw new Error("incompatible type")
     }
     return new Promise((resolve, reject) => {
-      this.sto.UpdateDoc(doc.Id(), set)
+      this.sto.UpdateDoc(doc.Id(), {name: doc.Name(), status: doc.Status()})
       .then(res => {
         if (res.hasOwnProperty("updatedAt")) {
           let data = res as DocUpdateResult
