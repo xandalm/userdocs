@@ -12,7 +12,6 @@ interface UserViewModel {
   name: string
   createdAt: string
   updatedAt?: string
-  // deletedAt?: string
 }
 
 function userViewModel(user: User): UserViewModel {
@@ -25,19 +24,16 @@ function userViewModel(user: User): UserViewModel {
   if (user.UpdatedAt() !== null) {
     data.updatedAt = (user.UpdatedAt() as Date).toISOString()
   }
-  // if (user.DeletedAt() !== null) {
-  //   data.deletedAt = (user.DeletedAt() as Date).toISOString()
-  // }
   return data
 }
 
-// expected prefix|suffix|infix 
-interface PCS {
-  prefix?: string,
-  infix?: string,
-  suffix?: string
-}
-
+// TODO
+//
+// Improve error handling in all methods
+//
+// GetMany
+// - Search accordingly to query filters
+// 
 export default class UserController {
   private userDao: UserDAO
   constructor(userDao: UserDAO) {
