@@ -1,4 +1,4 @@
-import { Storage } from "../persistence/storage"
+import { Storage, UserUpdateResult } from "../persistence/storage"
 
 interface UserFields {
   id: number
@@ -126,13 +126,7 @@ class UserDAOImpl implements UserDAO {
       this.sto.UpdateUser(user.Id(), set)
       .then(res => {
         if (res.hasOwnProperty("updatedAt")) {
-          let data = res as {
-            id?: number;
-            name: string;
-            email: string;
-            createdAt?: Date;
-            updatedAt: Date;
-          }
+          let data = res as UserUpdateResult
           user.SetEmail(data.email)
           user.SetName(data.name)
           user.SetUpdatedAt(data.updatedAt)

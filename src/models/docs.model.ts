@@ -1,4 +1,4 @@
-import { Storage } from "../persistence/storage"
+import { DocUpdateResult, Storage } from "../persistence/storage"
 
 interface DocFields {
   id: number
@@ -131,14 +131,7 @@ class DocDAOImpl implements DocDAO {
       this.sto.UpdateDoc(doc.Id(), set)
       .then(res => {
         if (res.hasOwnProperty("updatedAt")) {
-          let data = res as {
-            id?: number;
-            name: string;
-            owner: number;
-            status: number;
-            createdAt?: Date;
-            updatedAt: Date;
-          }
+          let data = res as DocUpdateResult
           doc.SetName(data.name)
           doc.SetStatus(data.status)
           doc.SetUpdatedAt(data.updatedAt)

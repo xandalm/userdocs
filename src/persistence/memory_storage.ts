@@ -1,4 +1,4 @@
-import { ErrViolatesStatusReference, ErrViolatesUniqueEmail, ErrViolatesUserReference, Storage } from "./storage";
+import { DocCreateResult, DocSelectResult, DocUpdateResult, ErrViolatesStatusReference, ErrViolatesUniqueEmail, ErrViolatesUserReference, Storage, UserCreateResult, UserSelectResult, UserUpdateResult } from "./storage";
 
 interface UserData {
   id: number,
@@ -29,7 +29,7 @@ export default class MemoryStorage implements Storage {
   usersByEmail = new Map<string, UserData>
   docs = new Map<number, DocumentData>
   docstatus = new Map<number, DocumentStatusData>
-  CreateUser(email: string, name: string): Promise<{ id: number; name: string; email: string; createdAt: Date; updatedAt?: Date | null; }> {let holdingEmail = this.usersByEmail.get(email)
+  CreateUser(email: string, name: string): Promise<UserCreateResult> {let holdingEmail = this.usersByEmail.get(email)
     if (holdingEmail != null) {
       throw ErrViolatesUniqueEmail
     }
@@ -49,7 +49,7 @@ export default class MemoryStorage implements Storage {
       createdAt: user.createdAt,
     })
   }
-  UpdateUser(id: number, set: { email?: string; name?: string; }): Promise<{ id?: number; name: string; email: string; createdAt?: Date; updatedAt: Date; }|{}> {
+  UpdateUser(id: number, set: { email?: string; name?: string; }): Promise<UserUpdateResult|{}> {
     
     let user = this.users.get(id);
     if (user == null) {
@@ -85,7 +85,7 @@ export default class MemoryStorage implements Storage {
     this.users.delete(user.id)
     return Promise.resolve()
   }
-  SelectUser(id: number): Promise<{ id: number; name: string; email: string; createdAt: Date; updatedAt?: Date | null; }|null> {
+  SelectUser(id: number): Promise<UserSelectResult|null> {
     let user = this.users.get(id)
     if (user == null) {
       return Promise.resolve(null)
@@ -103,7 +103,7 @@ export default class MemoryStorage implements Storage {
       infix?: string,
       suffix?: string
     }
-  } = {}): Promise<{ id: number; name: string; email: string; createdAt: Date; updatedAt?: Date | null; }[]> {
+  } = {}): Promise<UserSelectResult[]> {
     let users: UserData[] = []
 
     type Fn = (u: UserData) => boolean
@@ -160,7 +160,7 @@ export default class MemoryStorage implements Storage {
 
     return Promise.resolve(users)
   }
-  CreateDoc(name: string, owner: number, status: number): Promise<{ id: number; name: string; owner: number; status: number; createdAt: Date; updatedAt?: Date | null; }> {
+  CreateDoc(name: string, owner: number, status: number): Promise<DocCreateResult> {
     if (!this.users.has(owner)) {
       throw ErrViolatesUserReference
     }
@@ -178,7 +178,7 @@ export default class MemoryStorage implements Storage {
     this.docs.set(data.id, data)
     return Promise.resolve(data)
   }
-  UpdateDoc(id: number, set: { name?: string; status?: number; }): Promise<{ id?: number; name: string; owner: number; status: number; createdAt?: Date; updatedAt: Date; }|{}> {
+  UpdateDoc(id: number, set: { name?: string; status?: number; }): Promise<DocUpdateResult|{}> {
     let doc = this.docs.get(id);
     if (doc == null) {
       return Promise.resolve({})
@@ -209,7 +209,7 @@ export default class MemoryStorage implements Storage {
     this.docs.delete(doc.id)
     return Promise.resolve()
   }
-  SelectDoc(id: number): Promise<{ id: number; name: string; owner: number; status: number; createdAt: Date; updatedAt?: Date | null; } | null> {
+  SelectDoc(id: number): Promise<DocSelectResult | null> {
     let doc = this.docs.get(id)
     if (doc == null) {
       return Promise.resolve(null)
@@ -224,7 +224,7 @@ export default class MemoryStorage implements Storage {
     };
     owner?: number;
     status?: number;
-  }={}): Promise<{ id: number; name: string; owner: number; status: number; createdAt: Date; updatedAt?: Date | null; }[]> {
+  }={}): Promise<DocSelectResult[]> {
     let docs: DocumentData[] = []
 
     type Fn = (d: DocumentData) => boolean
