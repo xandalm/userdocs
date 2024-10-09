@@ -136,7 +136,19 @@ export interface UserDAO {
   Create(user: User) : Promise<void>
   Update(user: User, set: {email: string, name: string}) : Promise<void>
   Delete(id: number) : Promise<void>
-  Select(options?: {id?: number, email?: string, name?: string}) : Promise<User|null|User[]>
+  Select(id: number) : Promise<User|null>
+  SelectAll(options: {
+    email?: {
+      prefix?: string,
+      contains?: string,
+      suffix?: string
+    }, 
+    name?: {
+      prefix?: string,
+      contains?: string,
+      suffix?: string
+    }
+  }) : Promise<User[]>
 }
 
 class UserDAOImpl implements UserDAO {
@@ -180,7 +192,37 @@ class UserDAOImpl implements UserDAO {
   Delete(id: number): Promise<void> {
     throw new Error("Method not implemented.")
   }
-  Select(options?: { id?: number; email?: string; name?: string }): Promise<User | null | User[]> {
+  Select(id: number): Promise<User | null> {
+    return new Promise((resolve, reject) => {
+      this.sto.SelectUser(id)
+      .then(res => {
+        let user = (res === null)?
+          null
+          :
+          new UserImpl({
+            ...res,
+            createdAt: res.createdAt.getTime(),
+            updatedAt: res.updatedAt?.getTime()||null
+          })
+        resolve(user)
+      })
+      .catch(err => {
+        reject(err)
+      })
+    })
+  }
+  SelectAll(options: {
+    email?: {
+      prefix?: string,
+      contains?: string,
+      suffix?: string
+    }, 
+    name?: {
+      prefix?: string,
+      contains?: string,
+      suffix?: string
+    }
+  }): Promise<User[]> {
     throw new Error("Method not implemented.")
   }
 }

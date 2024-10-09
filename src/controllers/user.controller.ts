@@ -66,4 +66,29 @@ export default class UserController {
       res.send()
     })
   }
+  async GetById(req: Request, res: Response) {
+    let {id} = req.params
+
+    this.userDao.Select(parseInt(id))
+      .then(user => {
+        if (user == null) {
+          res.status(404).send()
+          return
+        } 
+        res.status(200).json(userViewModel(user))
+      })
+      .catch(err => {
+        switch(err) {
+          default:
+            res.status(500)
+        }
+        res.send()
+      })
+  }
+  async Put(req: Request, res: Response) {
+    throw new Error("Method not implemented.")
+  }
+  async Delete(req: Request, res: Response) {
+    throw new Error("Method not implemented.")
+  }
 }
