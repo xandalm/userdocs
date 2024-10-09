@@ -86,7 +86,54 @@ export default class UserController {
       })
   }
   async Put(req: Request, res: Response) {
-    throw new Error("Method not implemented.")
+    let {id} = req.params
+    let input = req.body
+    let alerts = new Array<string>
+
+    let user: User|null
+    try {
+      user = await this.userDao.Select(parseInt(id))
+    } catch(err) {
+      switch(err) {
+        default:
+          res.status(500).send()
+      }
+      res.send()
+      return
+    }
+
+    if (user == null) {
+      res.status(404).send()
+      return
+    }
+
+    if (input.hasOwnProperty("email")) {
+      const email = input.email
+      if ((typeof email !== "string") || !isValidEmail(email))
+        alerts.push("invalid email")
+    }
+    if (input.hasOwnProperty("name")) {
+      const name = input.name
+      if ((typeof name !== "string") || name.length < 2)
+        alerts.push("invalid name")
+    }
+
+    if (alerts.length > 0) {
+      res.status(400).json({errors: alerts})
+      return
+    }
+
+    this.userDao.Update(user, input)
+      .then(() => {
+        res.status(200).json(userViewModel(user))
+      })
+      .catch(err => {
+        switch(err) {
+          default:
+            res.status(500)
+        }
+        res.send()
+      })
   }
   async Delete(req: Request, res: Response) {
     throw new Error("Method not implemented.")

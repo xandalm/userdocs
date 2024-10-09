@@ -21,6 +21,7 @@ const UserRoutes = express.Router()
 
 UserRoutes.get("/:id", userCtrl.GetById.bind(userCtrl))
 UserRoutes.post("/", userCtrl.Post.bind(userCtrl))
+UserRoutes.put("/:id", userCtrl.Put.bind(userCtrl))
 
 // App
 
