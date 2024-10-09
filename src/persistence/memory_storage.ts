@@ -1,4 +1,4 @@
-import { DocCreateResult, DocSelectResult, DocUpdateResult, ErrViolatesStatusReference, ErrViolatesUniqueEmail, ErrViolatesUserReference, Storage, UserCreateResult, UserSelectResult, UserUpdateResult } from "./storage";
+import { DocCreateResult, DocSelectResult, DocStatusSelectResult, DocUpdateResult, ErrViolatesStatusReference, ErrViolatesUniqueEmail, ErrViolatesUserReference, Storage, UserCreateResult, UserSelectResult, UserUpdateResult } from "./storage";
 
 interface UserData {
   id: number,
@@ -29,6 +29,12 @@ export default class MemoryStorage implements Storage {
   usersByEmail = new Map<string, UserData>
   docs = new Map<number, DocumentData>
   docstatus = new Map<number, DocumentStatusData>
+  
+  constructor() {
+    this.docstatus.set(1, {id: 1, name: "Status One"})
+    this.docstatus.set(2, {id: 2, name: "Status Two"})
+  }
+
   CreateUser(email: string, name: string): Promise<UserCreateResult> {let holdingEmail = this.usersByEmail.get(email)
     if (holdingEmail != null) {
       throw ErrViolatesUniqueEmail
@@ -275,5 +281,12 @@ export default class MemoryStorage implements Storage {
     })
 
     return Promise.resolve(docs)
+  }
+  SelectDocStatus(id: number): Promise<DocStatusSelectResult|null> {
+    let status = this.docstatus.get(id)
+    if (status == null) {
+      return Promise.resolve(null)
+    }
+    return Promise.resolve(status)
   }
 }

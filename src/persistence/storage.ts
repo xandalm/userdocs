@@ -55,6 +55,11 @@ export interface DocSelectResult {
   updatedAt?: Date|null;
 }
 
+export interface DocStatusSelectResult {
+  id: number;
+  name: string;
+}
+
 export interface Storage {
   CreateUser(email: string, name: string) : Promise<UserCreateResult>
   UpdateUser(id: number, set: {email?: string, name?: string}) : Promise<UserUpdateResult|{}>
@@ -85,4 +90,5 @@ export interface Storage {
     owner?: number,
     status?: number,
   }) : Promise<DocSelectResult[]>
+  SelectDocStatus(id: number) : Promise<DocStatusSelectResult|null>
 }
