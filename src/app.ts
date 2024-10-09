@@ -1,33 +1,11 @@
 import express from "express";
 import UserController from "./controllers/user.controller";
 import { CreateUserDAO, UserStorage } from "./models/user.model";
-
-class StubStorage implements UserStorage {
-  CreateUser(email: string, name: string): Promise<{ id: number; name: string; email: string; createdAt: Date; updatedAt?: Date; deletedAt?: Date; }> {
-    return Promise.resolve({
-      id: 1,
-      email: email,
-      name: name,
-      createdAt: new Date,
-    })
-  }
-  UpdateUser(id: number, set: {email?: string, name?: string}): Promise<{ id: number; name: string; email: string; createdAt: Date; updatedAt: Date; deletedAt?: Date; }> {
-    throw new Error("Method not implemented.");
-  }
-  DeleteUser(id: number): Promise<{ id: number; name: string; email: string; createdAt: Date; updatedAt?: Date; deletedAt: Date; }> {
-    throw new Error("Method not implemented.");
-  }
-  GetUser(id: number): Promise<{ id: number; name: string; email: string; createdAt: Date; updatedAt?: Date; deletedAt?: Date; }> {
-    throw new Error("Method not implemented.");
-  }
-  GetActiveUsers(page: number, pageSize: number): Promise<{ id: number; name: string; email: string; createdAt: Date; updatedAt?: Date; deletedAt?: Date; }[]> {
-    throw new Error("Method not implemented.");
-  }
-}
+import MemoryStorage from "./persistence/memory_storage";
 
 // Storage
 
-const storage: UserStorage = new StubStorage
+const storage: UserStorage = new MemoryStorage()
 
 // DAOs
 

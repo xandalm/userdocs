@@ -84,42 +84,53 @@ export interface UserStorage {
     name: string;
     email: string;
     createdAt: Date;
-    updatedAt?: Date;
-    deletedAt?: Date;
+    updatedAt?: Date|null;
+    // deletedAt?: Date|null;
   }>
   UpdateUser(id: number, set: {email?: string, name?: string}) : Promise<{
-    id: number;
+    id?: number;
     name: string;
     email: string;
-    createdAt: Date;
+    createdAt?: Date;
     updatedAt: Date;
-    deletedAt?: Date;
+    // deletedAt?: Date|null;
   }>
-  DeleteUser(id: number) : Promise<{
+  DeleteUser(id: number) : Promise<void>
+  SelectUser(id: number) : Promise<{
     id: number;
     name: string;
     email: string;
     createdAt: Date;
-    updatedAt?: Date;
-    deletedAt: Date;
-  }>
-  GetUser(id: number) : Promise<{
+    updatedAt?: Date|null;
+    // deletedAt?: Date|null;
+  }|null>
+  SelectUsers(options: {
+    email?: {
+      prefix?: string,
+      contains?: string,
+      suffix?: string
+    }, 
+    name?: {
+      prefix?: string,
+      contains?: string,
+      suffix?: string
+    }
+  }) : Promise<{
     id: number;
     name: string;
     email: string;
     createdAt: Date;
-    updatedAt?: Date;
-    deletedAt?: Date;
-  }>
-  GetActiveUsers(page: number, pageSize: number) : Promise<{
-    id: number;
-    name: string;
-    email: string;
-    createdAt: Date;
-    updatedAt?: Date;
-    deletedAt?: Date;
+    updatedAt?: Date|null;
+    // deletedAt?: Date|null;
   }[]>
 }
+
+export const ErrEmailAlreadyExists = new Error("email already exists")
+export const ErrInexistentUser = new Error("there is no such user")
+export const ErrUnableToCreateUser = new Error("unable to create user due to storage error")
+export const ErrUnableToUpdateUser = new Error("unable to update user due to storage error")
+export const ErrUnableToDeleteUser = new Error("unable to delete user due to storage error")
+export const ErrUnableToSelectUser = new Error("unable to delete user due to storage error")
 
 export interface UserDAO {
   Create(user: User) : Promise<void>
@@ -158,7 +169,7 @@ class UserDAOImpl implements UserDAO {
       .then(res => {
         user.SetEmail(res.email)
         user.SetName(res.name)
-        user.SetUpdatedAt(res.createdAt)
+        user.SetUpdatedAt(res.updatedAt)
         resolve()
       })
       .catch(err => {
