@@ -136,6 +136,35 @@ export default class UserController {
       })
   }
   async Delete(req: Request, res: Response) {
-    throw new Error("Method not implemented.")
+    let {id} = req.params
+
+    let user: User|null
+    try {
+      user = await this.userDao.Select(parseInt(id))
+    } catch(err) {
+      switch(err) {
+        default:
+          res.status(500).send()
+      }
+      res.send()
+      return
+    }
+
+    if (user == null) {
+      res.status(404).send()
+      return
+    }
+
+    this.userDao.Delete(user.Id())
+      .then(() => {
+        res.status(204).send()
+      })
+      .catch(err => {
+        switch(err) {
+          default:
+            res.status(500)
+        }
+        res.send()
+      })
   }
 }

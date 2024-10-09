@@ -190,7 +190,15 @@ class UserDAOImpl implements UserDAO {
     })
   }
   Delete(id: number): Promise<void> {
-    throw new Error("Method not implemented.")
+    return new Promise((resolve, reject) => {
+      this.sto.DeleteUser(id)
+      .then(() => {
+        resolve()
+      })
+      .catch(err => {
+        reject(err)
+      })
+    })
   }
   Select(id: number): Promise<User | null> {
     return new Promise((resolve, reject) => {
