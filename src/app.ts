@@ -2,6 +2,9 @@ import express from "express";
 import UserController from "./controllers/user.controller";
 import { CreateUserDAO } from "./models/user.model";
 import MemoryStorage from "./persistence/memory_storage";
+import { CreateDocDAO } from "./models/docs.model";
+import { CreateDocStatusDAO } from "./models/docstatus.model";
+import DocController from "./controllers/doc.controller";
 
 // Storage
 
@@ -10,10 +13,13 @@ const storage = new MemoryStorage()
 // DAOs
 
 const userDao = CreateUserDAO(storage)
+const docDao = CreateDocDAO(storage)
+const docStatusDao = CreateDocStatusDAO(storage)
 
 // Controllers
 
 const userCtrl = new UserController(userDao)
+const docCtrl = new DocController(userDao, docDao, docStatusDao)
 
 // Routes
 
@@ -25,11 +31,20 @@ UserRoutes.post("/", userCtrl.Post.bind(userCtrl))
 UserRoutes.put("/:id", userCtrl.Put.bind(userCtrl))
 UserRoutes.delete("/:id", userCtrl.Delete.bind(userCtrl))
 
+const DocRoutes = express.Router()
+
+DocRoutes.get("/:id", docCtrl.Get.bind(docCtrl))
+DocRoutes.get("/", docCtrl.GetMany.bind(docCtrl))
+DocRoutes.post("/", docCtrl.Post.bind(docCtrl))
+DocRoutes.put("/:id", docCtrl.Put.bind(docCtrl))
+DocRoutes.delete("/:id", docCtrl.Delete.bind(docCtrl))
+
 // App
 
 const app = express()
 
 app.use(express.json())
 app.use("/users", UserRoutes)
+app.use("/docs", DocRoutes)
 
 export default app
