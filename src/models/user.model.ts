@@ -80,7 +80,7 @@ export const ErrUnableToSelectUser = new Error("unable to delete user due to sto
 
 export interface UserDAO {
   Create(user: User) : Promise<void>
-  Update(user: User, set: {email: string, name: string}) : Promise<void>
+  Update(user: User) : Promise<void>
   Delete(id: number) : Promise<void>
   Select(id: number) : Promise<User|null>
   SelectAll(options?: {
@@ -118,12 +118,12 @@ class UserDAOImpl implements UserDAO {
       })
     })
   }
-  Update(user: User, set: {email?: string, name?: string}): Promise<void> {
+  Update(user: User): Promise<void> {
     if (!(user instanceof UserImpl)) {
       throw new Error("incompatible type")
     }
     return new Promise((resolve, reject) => {
-      this.sto.UpdateUser(user.Id(), set)
+      this.sto.UpdateUser(user.Id(), {email: user.Email(), name: user.Name()})
       .then(res => {
         if (res.hasOwnProperty("updatedAt")) {
           let data = res as UserUpdateResult

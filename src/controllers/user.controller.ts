@@ -126,12 +126,16 @@ export default class UserController {
     if (input.hasOwnProperty("email")) {
       const email = input.email
       if ((typeof email !== "string") || !isValidEmail(email))
-        alerts.push("invalid email")
+        alerts.push("invalid email");
+      else
+        user.SetEmail(email)
     }
     if (input.hasOwnProperty("name")) {
       const name = input.name
       if ((typeof name !== "string") || name.length < 2)
-        alerts.push("invalid name")
+        alerts.push("invalid name");
+      else
+        user.SetName(name)
     }
 
     if (alerts.length > 0) {
@@ -139,7 +143,7 @@ export default class UserController {
       return
     }
 
-    this.userDao.Update(user, input)
+    this.userDao.Update(user)
       .then(() => {
         res.status(200).json(userViewModel(user))
       })
