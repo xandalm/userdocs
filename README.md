@@ -17,7 +17,7 @@
 13. [Recuperar informações dos usuários - inativo](#getusers)
 14. [Recuperar informações dos documentos - inativo](#getdocs)
 
-<p style="font-size: 24px">Instruções para execução</p><a name="instructions"></a>
+## <a name="instructions"></a><p style="font-size: 24px">Instruções para execução</p>
 
 Necessário ambiente com NodeJS e npm instalados.
 
@@ -31,7 +31,7 @@ Em seguida, inicie a aplicação:
 
 > npm run start
 
-<p style="font-size: 24px">Esquemas</p><a name="scheme"></a>
+## <a name="scheme"></a><p style="font-size: 24px">Esquemas</p>
 
 |User|Document|
 |----|--------|
@@ -63,9 +63,9 @@ será retornado como:
 
 <!-- USER -->
 
-<p style="font-size: 24px">Endpoints que passam por <b>/user</b></p>
+<!-- <p style="font-size: 24px">Endpoints que passam por <b>/user</b></p> -->
 
-<p style="font-size: 18px"><b>POST</b>&nbsp;&nbsp;/user&nbsp;&nbsp;<i>Adicionar novo usuário</i></p><a name="newuser"></a>
+## <a name="newuser"></a><p style="font-size: 18px"><b>POST</b>&nbsp;&nbsp;/user&nbsp;&nbsp;<i>Adicionar novo usuário</i></p>
 
 <table style="width: 100%">
 <thead>
@@ -147,7 +147,7 @@ Entrada inválida
 </tbody>
 </table>
 
-<p style="font-size: 18px"><b>PUT</b>&nbsp;&nbsp;/user/{userId}&nbsp;&nbsp;<i>Atualizar usuário existente</i></p><a name="setuser"></a>
+## <a name="setuser"></a><p style="font-size: 18px"><b>PUT</b>&nbsp;&nbsp;/user/{userId}&nbsp;&nbsp;<i>Atualizar usuário existente</i></p>
 
 <table style="width: 100%">
 <thead>
@@ -237,7 +237,7 @@ Recurso não encontrado (usuário inexistente)
 </tbody>
 </table>
 
-<p style="font-size: 18px"><b>DELETE</b>&nbsp;&nbsp;/user/{userId}&nbsp;&nbsp;<i>Excluir usuário existente</i></p><a name="deluser"></a>
+## <a name="deluser"></a><p style="font-size: 18px"><b>DELETE</b>&nbsp;&nbsp;/user/{userId}&nbsp;&nbsp;<i>Excluir usuário existente</i></p>
 
 <table style="width: 100%">
 <thead>
@@ -279,7 +279,7 @@ Recurso não encontrado (usuário inexistente)
 </tbody>
 </table>
 
-<p style="font-size: 18px"><b>GET</b>&nbsp;&nbsp;/user/{userId}&nbsp;&nbsp;<i>Recuperar usuário existente</i></p><a name="getuser"></a>
+## <a name="getuser"></a><p style="font-size: 18px"><b>GET</b>&nbsp;&nbsp;/user/{userId}&nbsp;&nbsp;<i>Recuperar usuário existente</i></p>
 
 <table style="width: 100%">
 <thead>
@@ -336,7 +336,7 @@ Recurso não encontrado (usuário inexistente)
 </tbody>
 </table>
 
-<p style="font-size: 18px"><b>POST</b>&nbsp;&nbsp;/user/{userId}/doc&nbsp;&nbsp;<i>Adicionar novo documento ao usuário</i></p><a name="newdocbyuser"></a>
+## <a name="newdocbyuser"></a><p style="font-size: 18px"><b>POST</b>&nbsp;&nbsp;/user/{userId}/doc&nbsp;&nbsp;<i>Adicionar novo documento ao usuário</i></p>
 
 <table style="width: 100%">
 <thead>
@@ -426,7 +426,7 @@ Recurso não encontrado (usuário inexistente)
 </tbody>
 </table>
 
-<p style="font-size: 18px"><b>GET</b>&nbsp;&nbsp;/user/{userId}/docs&nbsp;&nbsp;<i>Recuperar documentos do usuário</i></p><a name="getdocsbyuser"></a>
+## <a name="getdocsbyuser"></a><p style="font-size: 18px"><b>GET</b>&nbsp;&nbsp;/user/{userId}/docs&nbsp;&nbsp;<i>Recuperar documentos do usuário</i></p>
 
 <table style="width: 100%">
 <thead>
@@ -502,9 +502,9 @@ Recurso não encontrado (usuário inexistente)
 
 <!-- DOC -->
 
-<p style="font-size: 24px">Endpoints que iniciam em <b>/doc</b></p>
+<!-- <p style="font-size: 24px">Endpoints que iniciam em <b>/doc</b></p> -->
 
-<p style="font-size: 18px"><b>POST</b>&nbsp;&nbsp;/doc&nbsp;&nbsp;<i>Adicionar novo documento</i></p><a name="newdoc"></a>
+## <a name="newdoc"></a><p style="font-size: 18px"><b>POST</b>&nbsp;&nbsp;/doc&nbsp;&nbsp;<i>Adicionar novo documento</i></p>
 
 <table style="width: 100%">
 <thead>
@@ -588,7 +588,7 @@ Entrada inválida
 </tbody>
 </table>
 
-<p style="font-size: 18px"><b>PUT</b>&nbsp;&nbsp;/doc/{docId}&nbsp;&nbsp;<i>Atualizar documento existente</i></p><a name="setdoc"></a>
+## <a name="setdoc"></a><p style="font-size: 18px"><b>PUT</b>&nbsp;&nbsp;/doc/{docId}&nbsp;&nbsp;<i>Atualizar documento existente</i></p>
 
 <table style="width: 100%">
 <thead>
@@ -679,7 +679,7 @@ Recurso não encontrado (documento inexistente)
 </tbody>
 </table>
 
-<p style="font-size: 18px"><b>DELETE</b>&nbsp;&nbsp;/doc/{docId}&nbsp;&nbsp;<i>Excluir documento existente</i></p><a name="deldoc"></a>
+## <a name="deldoc"></a><p style="font-size: 18px"><b>DELETE</b>&nbsp;&nbsp;/doc/{docId}&nbsp;&nbsp;<i>Excluir documento existente</i></p>
 
 <table style="width: 100%">
 <thead>
@@ -721,7 +721,7 @@ Recurso não encontrado (documento inexistente)
 </tbody>
 </table>
 
-<p style="font-size: 18px"><b>GET</b>&nbsp;&nbsp;/doc/{docId}&nbsp;&nbsp;<i>Recuperar documento existente</i></p><a name="getdoc"></a>
+## <a name="getdoc"></a><p style="font-size: 18px"><b>GET</b>&nbsp;&nbsp;/doc/{docId}&nbsp;&nbsp;<i>Recuperar documento existente</i></p>
 
 <table style="width: 100%">
 <thead>
@@ -779,7 +779,7 @@ Recurso não encontrado (documento inexistente)
 </tbody>
 </table>
 
-<p style="font-size: 18px"><b><i>INATIVO</i></b> - <b>GET</b>&nbsp;&nbsp;/user&nbsp;&nbsp;<i>Recuperar usuários existentes</i></p><a name="getusers"></a>
+## <a name="getusers"></a><p style="font-size: 18px"><b><i>INATIVO</i></b> - <b>GET</b>&nbsp;&nbsp;/user&nbsp;&nbsp;<i>Recuperar usuários existentes</i></p>
 
 <table style="width: 100%">
 <thead>
@@ -845,7 +845,7 @@ Busca concluída sem conteúdo relevante
 </tbody>
 </table>
 
-<p style="font-size: 18px"><b><i>INATIVO</i></b> - <b>GET</b>&nbsp;&nbsp;/doc&nbsp;&nbsp;<i>Recuperar documentos existentes</i></p><a name="getdocs"></a>
+## <a name="getdocs"></a><p style="font-size: 18px"><b><i>INATIVO</i></b> - <b>GET</b>&nbsp;&nbsp;/doc&nbsp;&nbsp;<i>Recuperar documentos existentes</i></p>
 
 <table style="width: 100%">
 <thead>
