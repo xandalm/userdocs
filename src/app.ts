@@ -38,11 +38,13 @@ UserRoutes.post("/:userId/docs", userCtrl.PostDoc.bind(userCtrl))
 
 const DocRoutes = express.Router()
 
-DocRoutes.get("/:id", docCtrl.Get.bind(docCtrl))
+DocRoutes.param("docId", docCtrl.FindDoc.bind(userCtrl))
+
+DocRoutes.get("/:docId", docCtrl.Get.bind(docCtrl))
 DocRoutes.get("/", docCtrl.GetMany.bind(docCtrl))
 DocRoutes.post("/", docCtrl.Post.bind(docCtrl))
-DocRoutes.put("/:id", docCtrl.Put.bind(docCtrl))
-DocRoutes.delete("/:id", docCtrl.Delete.bind(docCtrl))
+DocRoutes.put("/:docId", docCtrl.Put.bind(docCtrl))
+DocRoutes.delete("/:docId", docCtrl.Delete.bind(docCtrl))
 
 // App
 

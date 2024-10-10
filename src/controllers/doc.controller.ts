@@ -1,4 +1,4 @@
-import { Request, Response } from "express"
+import { NextFunction, Request, Response } from "express"
 import { User, UserDAO, UserFactory } from "../models/user.model"
 import { Doc, DocDAO, DocFactory } from "../models/docs.model"
 import { DocStatus, DocStatusDAO } from "../models/docstatus.model"
@@ -89,6 +89,24 @@ export default class DocController {
     this.docDao = docDao;
     this.docStatusDao = docStatusDao
   }
+  async FindDoc(req: Request, res: Response, next: NextFunction, id: any) {
+    this.docDao.Select(parseInt(id))
+    .then(doc => {
+      if (doc === null) {
+        res.status(404).send()
+        return
+      }
+      req.doc = doc;
+      next()
+    })
+    .catch(err => {
+      switch(err) {
+        default:
+          res.status(500)
+      }
+      res.send()
+    })
+  }
   async Post(req: Request, res: Response) {
     let { ownerId, statusId, name } = req.body;
     let alerts: string[] = []
@@ -143,27 +161,16 @@ export default class DocController {
       })
   }
   async Get(req: Request, res: Response) {
-    let {id} = req.params
-
-    this.docDao.Select(parseInt(id))
-      .then(doc => {
-        if (doc == null) {
-          res.status(404).send()
-          return
-        } 
-        res.status(200).json(docViewModel(doc))
-      })
-      .catch(err => {
-        switch(err) {
-          default:
-            res.status(500)
-        }
-        res.send()
-      })
+    let doc = req.doc
+    res.status(200).json(docViewModel(doc))
   }
   async GetMany(req: Request, res: Response) {
     this.docDao.SelectAll()
       .then(docs => {
+        if (docs.length === 0) {
+          res.status(204).send();
+          return
+        }
         res.status(200).json(docs.map(doc => docViewModel(doc)))
       })
       .catch(err => {
@@ -175,27 +182,10 @@ export default class DocController {
       })
   }
   async Put(req: Request, res: Response) {
-    let {id} = req.params
     let input = req.body
     let alerts: string[] = []
 
-    let doc: Doc|null
-    try {
-      doc = await this.docDao.Select(parseInt(id))
-    } catch(err) {
-      switch(err) {
-        default:
-          res.status(500)
-      }
-      res.send()
-      return
-    }
-
-    if (doc == null) {
-      res.status(404).send()
-      return
-    }
-
+    let doc = req.doc;
     if (input.hasOwnProperty("name")) {
       const name = input.name
       if ((typeof name !== "string") || name.length < 2)
@@ -239,25 +229,7 @@ export default class DocController {
       })
   }
   async Delete(req: Request, res: Response) {
-    let {id} = req.params
-
-    let doc: Doc|null
-    try {
-      doc = await this.docDao.Select(parseInt(id))
-    } catch(err) {
-      switch(err) {
-        default:
-          res.status(500).send()
-      }
-      res.send()
-      return
-    }
-
-    if (doc == null) {
-      res.status(404).send()
-      return
-    }
-
+    let doc = req.doc;
     this.docDao.Delete(doc.Id())
       .then(() => {
         res.status(204).send()
