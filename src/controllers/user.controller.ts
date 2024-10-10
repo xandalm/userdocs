@@ -81,21 +81,22 @@ export default class UserController {
     this.docStatusDao = docStatusDao
   }
   async FindUser(req: Request, res: Response, next: NextFunction, id: any) {
-    try {
-      let user = await this.userDao.Select(parseInt(id))
+    this.userDao.Select(parseInt(id))
+    .then(user => {
       if (user === null) {
         res.status(404).send()
         return
       }
-      req.user = user
+      req.user = user;
       next()
-    } catch(err) {
+    })
+    .catch(err => {
       switch(err) {
         default:
-          res.status(500).send()
+          res.status(500)
       }
       res.send()
-    }
+    })
   }
   async Post(req: Request, res: Response) {
     let { email, name } = req.body;
@@ -134,6 +135,10 @@ export default class UserController {
   async GetMany(req: Request, res: Response) {
     this.userDao.SelectAll()
       .then(users => {
+        if (users.length === 0) {
+          res.status(204).send();
+          return
+        }
         res.status(200).json(users.map(user => userViewModel(user)))
       })
       .catch(err => {
@@ -199,6 +204,10 @@ export default class UserController {
     let user = req.user
     this.docDao.SelectAll({owner: user.Id()})
     .then(docs => {
+      if (docs.length === 0) {
+        res.status(204).send();
+        return
+      }
       res.status(200).json(docs.map(doc => docViewModel(doc)))
     })
   }
