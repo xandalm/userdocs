@@ -29,6 +29,8 @@ Em seguida, inicie a aplicação:
 
 > npm run start
 
+Nota: A porta endereçada pode ser alterada no arquivo (.env). O valor padrão está definido em 5000, logo as requisições serão atendidas no endereço http://localhost:5000.
+
 ## <a name="scheme"></a><p style="font-size: 24px">Esquemas</p>
 
 |User|Document|
