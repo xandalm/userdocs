@@ -17,12 +17,17 @@ const Users = (props) => {
   const [data, setData] = useState([])
 
   useEffect(() => {
-    let url = (id !== "") ? "/users" : `/users/${id}`;
+    let url = (id !== "") ? "/users" : `/user/${id}`;
     api.get(url)
     .then(res => {
       if (res.status === 200) {
         setData(res.data)
+      } else {
+        setData([])
       }
+    })
+    .catch(() => {
+      setData([])
     })
   }, [id])
 
@@ -80,22 +85,32 @@ const Docs = (props={owner}) => {
 
   useEffect(() => {
     if ((props.owner??"") !== "") {
-      api.get(`/users/${props.owner}/docs`)
+      api.get(`/user/${props.owner}/docs`)
       .then(res => {
         if (res.status === 200) {
           setData(res.data)
+        } else {
+          setData([])
         }
+      })
+      .catch(() => {
+        setData([])
       })
     }
   }, [props])
 
   useEffect(() => {
-    let url = (id !== "") ? "/docs" : `/docs/${id}`;
+    let url = (id !== "") ? "/docs" : `/doc/${id}`;
     api.get(url)
     .then(res => {
       if (res.status === 200) {
         setData(res.data)
+      } else {
+        setData([])
       }
+    })
+    .catch(() => {
+      setData([])
     })
   }, [id])
 
