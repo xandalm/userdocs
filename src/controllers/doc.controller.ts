@@ -52,21 +52,6 @@ function docViewModel(doc: Doc, u?: User|null, s?: DocStatus|null) : DocViewMode
     }
   }
   
-  // if (typeof(doc.Owner()) === "number") {
-  //   data.statusId = doc.Owner() as number
-  // } else {
-  //   let status = doc.Owner() as User
-  //   if (u == null || (u.email == false && u.name == false)) {
-  //     data.statusId = status.Id()
-  //   } else {
-  //     let status = doc.Status() as DocumentStatus
-  //     data.status = {
-  //       id: status.Id(),
-  //       name: status.Name()
-  //     }
-  //   }
-  // }
-  
   if (doc.UpdatedAt() !== null) {
     data.updatedAt = (doc.UpdatedAt() as Date).toISOString()
   }
