@@ -1,6 +1,23 @@
 # Users and its documents
 
-<p style="font-size: 24px">Instruções para execução</p>
+# Tabela de Conteúdo
+
+1. [Instruções para execução](#instructions)
+2. [Esquemas](#scheme)
+3. [Adicionar um usuário](#newuser)
+4. [Atualizar usuário](#setuser)
+5. [Excluir usuário](#deluser)
+6. [Recuperar informações do usuário](#getuser)
+7. [Adicionar documento a partir de um usuário](#newdocbyuser)
+8. [Recuperar documentos de um usuário](#getdocsbyuser)
+9. [Adicionar um documento](#newdoc)
+10. [Atualizar documento](#setdoc)
+11. [Excluir documento](#deldoc)
+12. [Recuperar informações do documento](#getdoc)
+13. [Recuperar informações dos usuários - inativo](#getusers)
+14. [Recuperar informações dos documentos - inativo](#getdocs)
+
+<p style="font-size: 24px">Instruções para execução</p><a name="instructions"></a>
 
 Necessário ambiente com NodeJS e npm instalados.
 
@@ -14,7 +31,7 @@ Em seguida, inicie a aplicação:
 
 > npm run start
 
-<p style="font-size: 24px">Esquemas</p>
+<p style="font-size: 24px">Esquemas</p><a name="scheme"></a>
 
 |User|Document|
 |----|--------|
@@ -48,7 +65,7 @@ será retornado como:
 
 <p style="font-size: 24px">Endpoints que passam por <b>/user</b></p>
 
-<p style="font-size: 18px"><b>POST</b>&nbsp;&nbsp;/user&nbsp;&nbsp;<i>Adicionar novo usuário</i></p>
+<p style="font-size: 18px"><b>POST</b>&nbsp;&nbsp;/user&nbsp;&nbsp;<i>Adicionar novo usuário</i></p><a name="newuser"></a>
 
 <table style="width: 100%">
 <thead>
@@ -130,7 +147,7 @@ Entrada inválida
 </tbody>
 </table>
 
-<p style="font-size: 18px"><b>PUT</b>&nbsp;&nbsp;/user/{userId}&nbsp;&nbsp;<i>Atualizar usuário existente</i></p>
+<p style="font-size: 18px"><b>PUT</b>&nbsp;&nbsp;/user/{userId}&nbsp;&nbsp;<i>Atualizar usuário existente</i></p><a name="setuser"></a>
 
 <table style="width: 100%">
 <thead>
@@ -220,7 +237,7 @@ Recurso não encontrado (usuário inexistente)
 </tbody>
 </table>
 
-<p style="font-size: 18px"><b>DELETE</b>&nbsp;&nbsp;/user/{userId}&nbsp;&nbsp;<i>Excluir usuário existente</i></p>
+<p style="font-size: 18px"><b>DELETE</b>&nbsp;&nbsp;/user/{userId}&nbsp;&nbsp;<i>Excluir usuário existente</i></p><a name="deluser"></a>
 
 <table style="width: 100%">
 <thead>
@@ -262,7 +279,7 @@ Recurso não encontrado (usuário inexistente)
 </tbody>
 </table>
 
-<p style="font-size: 18px"><b>GET</b>&nbsp;&nbsp;/user/{userId}&nbsp;&nbsp;<i>Recuperar usuário existente</i></p>
+<p style="font-size: 18px"><b>GET</b>&nbsp;&nbsp;/user/{userId}&nbsp;&nbsp;<i>Recuperar usuário existente</i></p><a name="getuser"></a>
 
 <table style="width: 100%">
 <thead>
@@ -319,7 +336,7 @@ Recurso não encontrado (usuário inexistente)
 </tbody>
 </table>
 
-<p style="font-size: 18px"><b>POST</b>&nbsp;&nbsp;/user/{userId}/doc&nbsp;&nbsp;<i>Adicionar novo documento ao usuário</i></p>
+<p style="font-size: 18px"><b>POST</b>&nbsp;&nbsp;/user/{userId}/doc&nbsp;&nbsp;<i>Adicionar novo documento ao usuário</i></p><a name="newdocbyuser"></a>
 
 <table style="width: 100%">
 <thead>
@@ -409,7 +426,7 @@ Recurso não encontrado (usuário inexistente)
 </tbody>
 </table>
 
-<p style="font-size: 18px"><b>GET</b>&nbsp;&nbsp;/user/{userId}/docs&nbsp;&nbsp;<i>Recuperar documentos do usuário</i></p>
+<p style="font-size: 18px"><b>GET</b>&nbsp;&nbsp;/user/{userId}/docs&nbsp;&nbsp;<i>Recuperar documentos do usuário</i></p><a name="getdocsbyuser"></a>
 
 <table style="width: 100%">
 <thead>
@@ -487,7 +504,7 @@ Recurso não encontrado (usuário inexistente)
 
 <p style="font-size: 24px">Endpoints que iniciam em <b>/doc</b></p>
 
-<p style="font-size: 18px"><b>POST</b>&nbsp;&nbsp;/doc&nbsp;&nbsp;<i>Adicionar novo documento</i></p>
+<p style="font-size: 18px"><b>POST</b>&nbsp;&nbsp;/doc&nbsp;&nbsp;<i>Adicionar novo documento</i></p><a name="newdoc"></a>
 
 <table style="width: 100%">
 <thead>
@@ -571,7 +588,7 @@ Entrada inválida
 </tbody>
 </table>
 
-<p style="font-size: 18px"><b>PUT</b>&nbsp;&nbsp;/doc/{docId}&nbsp;&nbsp;<i>Atualizar documento existente</i></p>
+<p style="font-size: 18px"><b>PUT</b>&nbsp;&nbsp;/doc/{docId}&nbsp;&nbsp;<i>Atualizar documento existente</i></p><a name="setdoc"></a>
 
 <table style="width: 100%">
 <thead>
@@ -662,7 +679,7 @@ Recurso não encontrado (documento inexistente)
 </tbody>
 </table>
 
-<p style="font-size: 18px"><b>DELETE</b>&nbsp;&nbsp;/doc/{docId}&nbsp;&nbsp;<i>Excluir documento existente</i></p>
+<p style="font-size: 18px"><b>DELETE</b>&nbsp;&nbsp;/doc/{docId}&nbsp;&nbsp;<i>Excluir documento existente</i></p><a name="deldoc"></a>
 
 <table style="width: 100%">
 <thead>
@@ -704,7 +721,7 @@ Recurso não encontrado (documento inexistente)
 </tbody>
 </table>
 
-<p style="font-size: 18px"><b>GET</b>&nbsp;&nbsp;/doc/{docId}&nbsp;&nbsp;<i>Recuperar documento existente</i></p>
+<p style="font-size: 18px"><b>GET</b>&nbsp;&nbsp;/doc/{docId}&nbsp;&nbsp;<i>Recuperar documento existente</i></p><a name="getdoc"></a>
 
 <table style="width: 100%">
 <thead>
@@ -762,7 +779,7 @@ Recurso não encontrado (documento inexistente)
 </tbody>
 </table>
 
-<p style="font-size: 18px"><b><i>INATIVO</i></b> - <b>GET</b>&nbsp;&nbsp;/user&nbsp;&nbsp;<i>Recuperar usuários existentes</i></p>
+<p style="font-size: 18px"><b><i>INATIVO</i></b> - <b>GET</b>&nbsp;&nbsp;/user&nbsp;&nbsp;<i>Recuperar usuários existentes</i></p><a name="getusers"></a>
 
 <table style="width: 100%">
 <thead>
@@ -828,7 +845,7 @@ Busca concluída sem conteúdo relevante
 </tbody>
 </table>
 
-<p style="font-size: 18px"><b><i>INATIVO</i></b> - <b>GET</b>&nbsp;&nbsp;/doc&nbsp;&nbsp;<i>Recuperar documentos existentes</i></p>
+<p style="font-size: 18px"><b><i>INATIVO</i></b> - <b>GET</b>&nbsp;&nbsp;/doc&nbsp;&nbsp;<i>Recuperar documentos existentes</i></p><a name="getdocs"></a>
 
 <table style="width: 100%">
 <thead>
