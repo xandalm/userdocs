@@ -27,7 +27,7 @@ class UserImpl implements User {
     createdAt: 0,
     updatedAt: null,
   }
-  constructor(props: {id?: number, email?: string, name?: string, createdAt?: number|null, updatedAt?: number|null, deletedAt?: number|null}){
+  constructor(props: {id?: number, email?: string, name?: string, createdAt?: number|null, updatedAt?: number|null}){
     Object.assign(this.props, props)
   }
   SetId(value: number) {

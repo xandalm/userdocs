@@ -23,7 +23,6 @@ interface DocViewModel {
   status?: StatusViewModel
   createdAt: string
   updatedAt?: string
-  deletedAt?: string
 }
 
 function docViewModel(doc: Doc, u?: User|null, s?: DocStatus|null) : DocViewModel {
