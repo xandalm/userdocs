@@ -98,6 +98,7 @@ export interface DocDAO {
       infix?: string,
       suffix?: string
     }
+    owner?: number,
     status?: number
   }) : Promise<Doc[]>
 }
@@ -179,6 +180,7 @@ class DocDAOImpl implements DocDAO {
       infix?: string,
       suffix?: string
     },
+    owner?: number,
     status?: number
   }): Promise<Doc[]> {
     return new Promise((resolve, reject) => {

@@ -18,18 +18,23 @@ const docStatusDao = CreateDocStatusDAO(storage)
 
 // Controllers
 
-const userCtrl = new UserController(userDao)
+const userCtrl = new UserController(userDao, docDao, docStatusDao)
 const docCtrl = new DocController(userDao, docDao, docStatusDao)
 
 // Routes
 
 const UserRoutes = express.Router()
 
-UserRoutes.get("/:id", userCtrl.Get.bind(userCtrl))
+UserRoutes.param("userId", userCtrl.FindUser.bind(userCtrl))
+
+UserRoutes.get("/:userId", userCtrl.Get.bind(userCtrl))
 UserRoutes.get("/", userCtrl.GetMany.bind(userCtrl))
 UserRoutes.post("/", userCtrl.Post.bind(userCtrl))
-UserRoutes.put("/:id", userCtrl.Put.bind(userCtrl))
-UserRoutes.delete("/:id", userCtrl.Delete.bind(userCtrl))
+UserRoutes.put("/:userId", userCtrl.Put.bind(userCtrl))
+UserRoutes.delete("/:userId", userCtrl.Delete.bind(userCtrl))
+
+UserRoutes.get("/:userId/docs", userCtrl.GetDocs.bind(userCtrl))
+UserRoutes.post("/:userId/docs", userCtrl.PostDoc.bind(userCtrl))
 
 const DocRoutes = express.Router()
 
