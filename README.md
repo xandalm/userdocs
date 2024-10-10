@@ -1,5 +1,3 @@
-# Users and its documents
-
 # Tabela de Conteúdo
 
 1. [Instruções para execução](#instructions)
